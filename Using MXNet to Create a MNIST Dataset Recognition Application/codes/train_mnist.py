@@ -4,16 +4,16 @@ import logging
 import os
 # load data
 def get_mnist_iter(args):
-    train_image = os.path.join(args.data_url + 'train-images-idx3-ubyte.gz')
-    train_label = os.path.join(args.data_url + 'train-labels-idx1-ubyte.gz')
+    train_image = os.path.join(args.data_url + 'train-images-idx3.ubyte')
+    train_label = os.path.join(args.data_url + 'train-labels-idx1.ubyte')
     try:
         import moxing.mxnet as mox
     except:
-        assert os.path.exists(train_image), 'file train-images-idx3-ubyte is not exist,please check your data url'
-        assert os.path.exists(train_label), 'file train-labels-idx1-ubyte is not exist,please check your data url'
+        assert os.path.exists(train_image), 'file train-images-idx3.ubyte is not exist,please check your data url'
+        assert os.path.exists(train_label), 'file train-labels-idx1.ubyte is not exist,please check your data url'
     else:
-        assert mox.file.exists(train_image), 'file train-images-idx3-ubyte is not exist,please check your data url'
-        assert mox.file.exists(train_image), 'file train-labels-idx1-ubyte is not exist,please check your data url'
+        assert mox.file.exists(train_image), 'file train-images-idx3.ubyte is not exist,please check your data url'
+        assert mox.file.exists(train_image), 'file train-labels-idx1.ubyte is not exist,please check your data url'
 
     train = mx.io.MNISTIter(image=train_image,
                             label=train_label,
