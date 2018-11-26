@@ -12,16 +12,28 @@
 
 
 ### 1. 准备数据
-下载MNIST数据集，解压缩之后上传至OBS桶中。具体操作如下：
+通过ModelArts市场预置数据集创建自动学习所需数据集版本，具体操作如下：
 
-**步骤 1**  &#160; &#160; 下载MNIST数据集。下载路径为：http://data.mxnet.io/data/mnist/ 。数据集文件说明如下：
+**步骤 1**  &#160; &#160; 登录“[ModelArts](https://console.huaweicloud.com/modelarts/?region=cn-north-1#/manage/dashboard)”管理控制台，在“全局配置”界面添加访问秘钥。如图:
 
-- t10k-images-idx3-ubyte.gz：验证集，共包含10000个样本。
-- t10k-labels-idx1-ubyte.gz：验证集标签，共包含10000个样本的类别标签。
-- train-images-idx3-ubyte.gz：训练集，共包含60000个样本。
-- train-labels-idx1-ubyte.gz：训练集标签，共包含60000个样本的类别标签。
+<img src="images/添加aksk.png" width="800px" />
 
-**步骤 2**  &#160; &#160; 解压缩4个压缩文件，并参考<a href = "https://support.huaweicloud.com/usermanual-dls/dls_01_0040.html">“上传业务数据”</a>章节内容，分别上传至华为云OBS桶 （假设OBS桶路径为：s3://mxnet-test/data/）。
+**步骤 2**  &#160; &#160; 返回“ModelArts”管理控制台，单击左侧导航栏的“市场”。 切换到ModelArts市场的“数据集”页面，找到数据集“Mnist-Data-Set”。
+
+**步骤 3**  &#160; &#160; 进入到该预置数据集“Mnist-Data-Set”的详情页面，执行“导入到我的数据集”操作，页面会自动跳转到“数据管理>数据集”页面进行创建。
+
+**步骤 4**  &#160; &#160; 在“ModelArts”管理控制台的“数据管理>数据集”页面查看直到mnist数据集（Mnist-Data-Set）创建完成，数据详细信息完全加载。
+
+**步骤 5**  &#160; &#160; 在数据集目录页面获取创建的mnist数据集的桶信息mnist-data-set-73625398-909b-469c-895a-17fc5acc7575/mnist/。请参考下图。
+
+<img src="images/数据集.png" width="800px" />
+
+训练需要的数据集(**注意是没有.gz的后缀的文件**)：
+
+- t10k-images-idx3-ubyte：验证集，共包含10000个样本。
+- t10k-labels-idx1-ubyte：验证集标签，共包含10000个样本的类别标签。
+- train-images-idx3-ubyte：训练集，共包含60000个样本。
+- train-labels-idx1-ubyte：训练集标签，共包含60000个样本的类别标签。
 
 
 ### 2. 训练模型
@@ -29,18 +41,14 @@
 
 **步骤 1**  &#160; &#160; 复制由MXNet原生接口编写的模型训练脚本文件<a href ="codes/train_mnist.py">train\_mnist.py</a>，（在github界面右上角点击raw）并将其粘贴到本地的train_mnist.py脚本中，或登录github进行下载。
 
-**步骤 2**     登录“ModelArts”管理控制台，在“全局配置”界面添加访问秘钥。如图1。
+**步骤 2** &#160; &#160; 参考<a href = "https://support.huaweicloud.com/usermanual-dls/dls_01_0040.html">“上传业务数据”</a>章节内容，将脚本文件上传至华为云OBS桶 （s3://你的桶名/你的文件名/,注意路径中不要出现中文）。
 
-<img src="images/添加aksk.png" width="800px" />
-
-**步骤 3** &#160; &#160; 参考<a href = "https://support.huaweicloud.com/usermanual-dls/dls_01_0040.html">“上传业务数据”</a>章节内容，将脚本文件上传至华为云OBS桶 （s3://你的桶名/你的文件名/,注意路径中不要出现中文）。
-
-**步骤 4**  &#160; &#160; 在“训练作业”界面，单击左上角的“创建”，参考图1填写训练作业参数。**AI引擎选用mxnet。**
+**步骤 3**  &#160; &#160; 在“训练作业”界面，单击左上角的“创建”，参考图1填写训练作业参数。 “名称”和“描述”可以随意填写；“数据来源”请选择“数据集”Mnist-Data-Set{或者“数据的存储位置”(本例中为mnist-data-set-73625398-909b-469c-895a-17fc5acc7575/mnist)}；**AI引擎选用mxnet。**
 
 
 图2 训练作业参数配置
 
-<img src="images/分布式作业参数1.PNG" width="800px" />
+<img src="images/分布式作业参数.PNG" width="800px" />
 
 <img src="images/训练作业参数.png" width="800px" />
 
@@ -59,9 +67,7 @@
 11. 计算节点规格前者为cpu，后者1*P100为GPU，训练作业推荐使用后者GPU；
 12. 计算节点个数，2个及以上为分布式训练，需要更改对应的运行参数kv_store，1则为单机模式不用更改参数kv_store；
 
-**步骤 5**  &#160; &#160;  参数确认无误后，单击“立即创建”，完成训练作业创建。
-
-训练作业完成后，即完成了模型训练过程。如有问题，可点击作业名称，进入作业详情界面查看训练作业日志信息。
+**步骤 5**  &#160; &#160;  参数确认无误后，单击“立即创建”，完成训练作业创建。训练作业完成后，即完成了模型训练过程。如有问题，可点击作业名称，进入作业详情界面查看训练作业日志信息。
 
 
 ### 3. 部署模型
