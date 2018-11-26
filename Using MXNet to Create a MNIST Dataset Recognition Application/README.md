@@ -26,7 +26,7 @@
 
 **步骤 5**  &#160; &#160; 在数据集目录页面获取创建的mnist数据集的桶信息mnist-data-set-73625398-909b-469c-895a-17fc5acc7575/mnist/。请参考下图。
 
-<img src="images/数据集.PNG" width="800px" />
+<img src="images/数据集.png" width="800px" />
 
 训练需要的数据集(**注意是没有.gz的后缀的文件**)：
 
