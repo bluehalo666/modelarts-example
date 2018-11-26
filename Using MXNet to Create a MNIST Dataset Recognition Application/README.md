@@ -48,7 +48,7 @@
 
 图2 训练作业参数配置
 
-<img src="images/分布式作业参数.PNG" width="800px" />
+<img src="images/分布式作业参数.png" width="800px" />
 
 <img src="images/训练作业参数.png" width="800px" />
 
