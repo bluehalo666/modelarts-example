@@ -11,12 +11,10 @@ from pyspark.mllib.recommendation import ALS, MatrixFactorizationModel, Rating
 AK=os.getenv('MINER_USER_ACCESS_KEY')
 if AK is None:
     AK=''
-print "AK: " + str(AK)
 
 SK=os.getenv('MINER_USER_SECRET_ACCESS_KEY')
 if SK is None:
     SK=''
-print "SK: " + str(SK)
 
 obs_endpoint=os.getenv('MINER_OBS_URL')
 if obs_endpoint is None:

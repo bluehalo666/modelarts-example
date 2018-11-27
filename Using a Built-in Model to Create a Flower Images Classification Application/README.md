@@ -2,54 +2,46 @@
 
 本文介绍在华为云ModelArts平台如何使用flowers数据集对预置的ResNet_v1\_50模型进行重训练，快速构建花卉图像分类应用。操作步骤分为4部分，分别是：
 
-1.	**准备数据**：下载flowers数据集，并上传至华为云对象存储服务器（OBS）中。
+1.	**准备数据**：在ModelArts市场预置数据集中找到自动学习对应的flowers训练集，并根据该原始数据集生成自动学习可处理的数据集。。
 2.	**训练模型**：使用flowers训练集，对ResNet_v1\_50模型重训练，得到新模型。
 3.	**部署模型**：将得到的模型，部署为在线预测服务。
 4.	**发起预测请求**：发起预测请求获取请求结果。
+
+    注：如果是第一次使用ModelArts服务，在使用之前需要给服务添加访问密钥。可参考<a href="https://github.com/CalvinXKY/modelarts-example/blob/master/Using%20ModelArts%20to%20Create%20a%20Yunbao%20Detection%20Model/README.md">“服务配置”</a>。
 ### 1. 准备数据
-下载flowers数据集并上传至华为云对象存储服务器（OBS）桶中，操作步骤如下：
 
-**步骤 1** &#160; &#160; 下载并解压缩数据集压缩包“flower_photos.tgz”，flowers数据集的下载路径为：[https://dls-public-data.obs.cn-north-1.myhwclouds.com/tensorflow/modelarts_flowers.zip](https://dls-public-data.obs.cn-north-1.myhwclouds.com/tensorflow/modelarts_flowers.zip)
+通过ModelArts市场预置数据集创建自动学习所需数据集版本，操作步骤如下：
 
-**步骤 2**&#160; &#160; 参考<a href="https://support.huaweicloud.com/usermanual-dls/dls_01_0040.html">“上传业务数据”</a>章节内容，将数据集上传至华为云OBS桶中（假设OBS桶路径为：/modelarts-example/datasets/flowers_split）。
+**步骤 1** &#160; &#160; 登录“ModelArts”管理控制台，单击左侧导航栏的“市场”。
 
-该路径下包含了用户训练模型需要使用的所有图像文件， 该目录下有5种类别，分别为：daisy, dandelion, roses, sunflowers, tulips。目录结构为：
+**步骤 2** &#160; &#160; 切换到ModelArts市场的“数据集”页面，找到自动学习对应的花卉数据集“Flowers-Data-Set”。
 
-    /obs-testdata/flowers_split
-	    
-       |- 01.jpg
-       |- 01.txt
-       |- ...
-	   
-       |- n.jpg
-       |- n.txt
-       |- ...
-	    
+**步骤 3** &#160; &#160; 进入到该预置花卉数据集的详情页面，执行“导入我的数据集操作”，页面会自动跳转到“数据管理>数据集”页面进行创建。
 
-**步骤 3**  &#160; &#160; 登录[“ModelArts”](https://console.huaweicloud.com/modelarts/?region=cn-north-1#/manage/dashboard)管理控制台，在“全局配置”界面添加访问秘钥。如图1。
+**步骤 4** &#160; &#160; 在“数据管理>数据集”页面查看直到花卉数据集创建完成，数据详细信息完全加载。
 
-图1 添加访问秘钥
+**步骤 5** &#160; &#160; 在数据集目录页面获取创建的花卉数据集的桶信息,请参考图6。
 
-<img src="images/添加访问秘钥.PNG" width="800px" />
+图6 数据集
 
+<img src="images/数据集路径.png" width="800px" />
 
 ### 2. 训练模型
 接下来将使用训练集对预置的ResNet_v1\_50模型进行重训练获取新的模型，操作步骤如下：
 
 **步骤 1**&#160; &#160; 返回“ModelArts”管理控制台界面。单击左侧导航栏的“训练作业”，进入“训练作业”界面。
 
-**步骤 2**&#160; &#160;填写参数。“名称”和“描述”可以随意填写；“数据来源”请选择“数据的存储位置”(/modelarts-example/datasets/flowers\_split)，即数据所在的父目录；在“算法/预置算法”列表中找到名称为“ResNet_v1\_50”的模型；“运行参数”点击增加运行参数，增加参数max\_epoches=10，max\_training\_time=100（防止数据量大时获取数据速度慢，训练时间过长而退出训练）；“训练输出位置”请选择一个路径（/modelarts-example/log）用于保存输出模型和预测文件，参数确认无误后，单击“立即创建”完成训练作业创建。
+**步骤 2**&#160; &#160;填写参数。“名称”和“描述”可以随意填写；“数据来源”请选择“数据集”，并选择Flowers_Data_Set；在“算法/预置算法”列表中找到名称为“ResNet_v1\_50”的模型；“运行参数”点击增加运行参数，增加参数max\_epoches=10，max\_training\_time=100000（防止数据量大时获取数据速度慢，训练时间过长而退出训练）；“训练输出位置”请选择一个路径（s3://modelarts-example/log）用于保存输出模型和预测文件，参数确认无误后，单击“立即创建”完成训练作业创建。
 
 注： 参数max\_epoches：1个epoch代表整个数据集，此处表示训练10个epoch，数值可更改，不填写时使用默认值。
    
 
 图2 训练作业的参数配置
 
-<img src="images/训练作业参数配置.PNG" width="800px" />
+<img src="images/训练作业参数配置new.png" width="800px" />
 
-"数据集"请选择训练集和验证集所在的父目录（在本案例中，即/modelarts-example/datasets/flowers\_split）。
 
-**步骤 3**&#160; &#160; 在模型训练的过程中或者完成后，通过创建TensorBoard作业查看一些参数的统计信息，如loss， accuracy等。在“训练作业”界面，点击TensorBoard，再点击“创建”按钮，参数“名称”可随意填写，“日志路径”请选择步骤3中“训练输出位置”参数中的路径(/modelarts-example/log)。
+**步骤 3**&#160; &#160; 在模型训练的过程中或者完成后，通过创建TensorBoard作业查看一些参数的统计信息，如loss， accuracy等。在“训练作业”界面，点击TensorBoard，再点击“创建”按钮，参数“名称”可随意填写，“日志路径”请选择步骤3中“训练输出位置”参数中的路径(s3://modelarts-example/log)。
 
 图3 创建tensorboard
 
@@ -65,7 +57,7 @@
 
 模型训练完成后，可以创建预测作业，将模型部署为在线预测服务，操作步骤如下：
 
-**步骤 1**  &#160; &#160; 在“模型管理”界面，单击左上角的“导入”，参考图2填写参数。名称可随意填写，“元模型来源”选择“指定元模型位置”，“选择元模型”的路径与训练模型中“训练输出位置”保持一致(/modelarts-example/log)，“AI引擎”选择“TensorFlow”，“推理代码”可忽略。
+**步骤 1**  &#160; &#160; 在“模型管理”界面，单击左上角的“导入”，参考图2填写参数。名称可随意填写，“元模型来源”选择“指定元模型位置”，“选择元模型”的路径与训练模型中“训练输出位置”保持一致(s3://modelarts-example/log)，“AI引擎”选择“TensorFlow”，“推理代码”可忽略。
 
 图4 导入模型参数配置
 
@@ -82,7 +74,7 @@
 
 ### 4. 发起预测请求
 
-完成模型部署后，在部署上线-在线服务界面可以看到已上线的预测服务名称，点击进入可以进行在线预测，如图8。
+完成模型部署后，在部署上线-在线服务界面可以看到已上线的预测服务名称，点击进入可以进行在线预测，如图6。
 
 图6 在线服务测试
 
