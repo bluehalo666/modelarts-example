@@ -65,7 +65,6 @@ import time
 print('Training job start at: %s' % time.time())
 
 import os
-os.path.exists()
 os.environ.pop('http_proxy', None)
 # os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0'
 
