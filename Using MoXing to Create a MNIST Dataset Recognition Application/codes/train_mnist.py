@@ -66,7 +66,7 @@ def main(*args, **kwargs):
       tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y))
     correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-    export_spec = mox.ExportSpec(inputs_dict={'images': x}, outputs_dict={'logits': y})
+    export_spec = mox.ExportSpec(inputs_dict={'images': x}, outputs_dict={'logits': y}, version='model')
     return mox.ModelSpec(loss=cross_entropy, log_info={'loss': cross_entropy, 'accuracy': accuracy},
                          export_spec=export_spec)
 
