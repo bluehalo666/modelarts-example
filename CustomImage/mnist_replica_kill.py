@@ -45,38 +45,36 @@ import os
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 
-taskIndex = os.getenv('DLS_TASK_INDEX')
-taskNum = os.getenv('DLS_TASK_NUMBER')
-print('DLS_TASK_INDEX:' + taskIndex)
-print('DLS_TASK_NUMBER:'+ taskNum)
+task_index = os.getenv('DLS_TASK_INDEX')
+task_num = os.getenv('DLS_TASK_NUMBER')
 
 #if task number big then 1, it is a distribution task
 #half is ps, else is worker
-if int(taskNum) > 1:
-    batchPsHosts = ''
-    batchWorkerHosts = ''
-    middleIndex =  int(taskNum) / 2
-    for i in range(0, int(taskNum)):
+if int(task_num) > 1:
+    batch_ps_hosts = ''
+    batch_worker_hosts = ''
+    middle_index = int(task_num) / 2
+    for i in range(0, int(task_num)):
         print ('i:',i)
-        if i < middleIndex :
-            batchPsHosts +=os.getenv('BATCH_CUSTOM'+ str(i) +'_HOSTS') + ','
+        if i < middle_index :
+            batch_ps_hosts += os.getenv('BATCH_CUSTOM' + str(i) + '_HOSTS') + ','
         else:
-            batchWorkerHosts += os.getenv('BATCH_CUSTOM' + str(i) + '_HOSTS') + ','
+            batch_worker_hosts += os.getenv('BATCH_CUSTOM' + str(i) + '_HOSTS') + ','
 
-batchPsHosts=batchPsHosts[:-1]
-batchWorkerHosts=batchWorkerHosts[:-1]
-jobName = ''
-if int(taskIndex) < middleIndex:
-    jobName = 'ps'
+batch_ps_hosts= batch_ps_hosts[:-1]
+batch_worker_hosts= batch_worker_hosts[:-1]
+job_name = ''
+if int(task_index) < middle_index:
+    job_name = 'ps'
 else:
-    jobName = 'worker'
-    taskIndex = str(int(int(taskIndex) - middleIndex))
+    job_name = 'worker'
+    task_index = str(int(int(task_index) - middle_index))
 
-print('job name:' + jobName)
-print('job index:' + taskIndex)
-print('batchPsHosts:' + batchPsHosts)
-print('batchWorkerHosts:' + batchWorkerHosts)
-tfTaskIndex = int(taskIndex)
+print('job name:' + job_name)
+print('job index:' + task_index)
+print('batchPsHosts:' + batch_ps_hosts)
+print('batchWorkerHosts:' + batch_worker_hosts)
+tf_task_index = int(task_index)
 
 
 flags = tf.app.flags
@@ -85,7 +83,7 @@ flags.DEFINE_string("data_url", "/tmp/mnist-data",
 flags.DEFINE_boolean("download_only", False,
                      "Only perform downloading of data; Do not proceed to "
                      "session preparation, model definition or training")
-flags.DEFINE_integer("task_index", tfTaskIndex,
+flags.DEFINE_integer("task_index", tf_task_index,
                      "Worker task index, should be >= 0. task_index=0 is "
                      "the master worker task the performs the variable "
                      "initialization ")
@@ -111,11 +109,11 @@ flags.DEFINE_boolean(
     "will use the worker hosts via their GRPC URLs (one client process "
     "per worker host). Otherwise, will create an in-process TensorFlow "
     "server.")
-flags.DEFINE_string("ps_hosts",batchPsHosts,
+flags.DEFINE_string("ps_hosts", batch_ps_hosts,
                     "Comma-separated list of hostname:port pairs")
-flags.DEFINE_string("worker_hosts", batchWorkerHosts,
+flags.DEFINE_string("worker_hosts", batch_worker_hosts,
                     "Comma-separated list of hostname:port pairs")
-flags.DEFINE_string("job_name", jobName,"job name: worker or ps")
+flags.DEFINE_string("job_name", job_name, "job name: worker or ps")
 
 FLAGS = flags.FLAGS
 
