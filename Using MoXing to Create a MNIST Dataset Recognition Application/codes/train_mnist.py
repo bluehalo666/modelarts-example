@@ -1,3 +1,23 @@
+# Copyright 2018 Deep Learning Service of Huawei Cloud. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
+# Train a user defined model with TensorFlow APIs.
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 from tensorflow.examples.tutorials.mnist import input_data
 import tensorflow as tf
 import moxing.tensorflow as mox
@@ -7,16 +27,21 @@ tf.flags.DEFINE_string('data_url', None, 'Dir of dataset')
 tf.flags.DEFINE_string('train_url', None, 'Train Url')
 
 flags = tf.flags.FLAGS
-work_directory = flags.data_url
-filenames = ['train-images-idx3-ubyte.gz', 'train-labels-idx1-ubyte.gz', 't10k-images-idx3-ubyte.gz',
-             't10k-labels-idx1-ubyte.gz']
 
-for filename in filenames:
-  filepath = os.path.join(work_directory, filename)
-  if not mox.file.exists(filepath):
-    raise ValueError('MNIST dataset file %s not found in %s' % (filepath, work_directory))
 
-def main(*args):
+def check_dataset():
+  work_directory = flags.data_url
+  filenames = ['train-images-idx3-ubyte.gz', 'train-labels-idx1-ubyte.gz', 't10k-images-idx3-ubyte.gz',
+               't10k-labels-idx1-ubyte.gz']
+
+  for filename in filenames:
+    filepath = os.path.join(work_directory, filename)
+    if not mox.file.exists(filepath):
+      raise ValueError('MNIST dataset file %s not found in %s' % (filepath, work_directory))
+
+
+def main(*args, **kwargs):
+  check_dataset()
   mnist = input_data.read_data_sets(flags.data_url, one_hot=True)
 
 
@@ -39,10 +64,9 @@ def main(*args):
     y = tf.matmul(x, W) + b
     cross_entropy = tf.reduce_mean(
       tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y))
-    predictions = tf.argmax(y, 1)
-    correct_predictions = tf.equal(predictions, tf.argmax(y_, 1))
-    accuracy = tf.reduce_mean(tf.cast(correct_predictions, tf.float32))
-    export_spec = mox.ExportSpec(inputs_dict={'images': x}, outputs_dict={'predictions': predictions}, version='model')
+    correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
+    accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+    export_spec = mox.ExportSpec(inputs_dict={'images': x}, outputs_dict={'logits': y})
     return mox.ModelSpec(loss=cross_entropy, log_info={'loss': cross_entropy, 'accuracy': accuracy},
                          export_spec=export_spec)
 
