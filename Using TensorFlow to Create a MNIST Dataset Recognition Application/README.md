@@ -34,7 +34,7 @@
 ### 2. 训练模型
 接下来，要编写模型训练脚本代码（本案例中已编写好了训练脚本），并完成模型训练，操作步骤如下：
 
-**步骤 1**  &#160; &#160; 下载模型训练脚本文件<a href ="codes/train_mnist.py">train\_mnist\_tf.py</a>。参考<a href="https://support.huaweicloud.com/usermanual-dls/dls_01_0040.html">“上传业务数据”</a>章节内容，将脚本文件上传至华为云OBS桶 （假设OBS桶路径为：/modelarts-example/codes/）。
+**步骤 1**  &#160; &#160; 下载模型训练脚本文件[train\_mnist\_tf.py](https://github.com/huawei-clouds/modelarts-example/blob/master/Using%20TensorFlow%20to%20Create%20a%20MNIST%20Dataset%20Recognition%20Application/codes/train_mnist_tf.py)。参考<a href="https://support.huaweicloud.com/usermanual-dls/dls_01_0040.html">“上传业务数据”</a>章节内容，将脚本文件上传至华为云OBS桶 （假设OBS桶路径为：/modelarts-example/codes/）。
 
 **步骤 2**  &#160; &#160; 在“训练作业”界面，单击左上角的“创建”, “名称”和“描述”可以随意填写；“数据来源”请选择“数据集”Mnist-Data-Set{或者数据的存储位置”(本例中为mnist-data-set-73625398-909b-469c-895a-17fc5acc7575/mnist/)}；“算法来源”请选择“常用框架”，“AI引擎”选择“TensorFlow"；“代码目录”请选择型训练脚本文件train\_mnist\_tf.py所在的OBS父目录（/modelarts-example/codes/）；“启动文件”请选择“train\_mnist.py”；“训练输出位置”请选择一个路径（例如/modelarts-example/log/）用于保存输出模型和预测文件，参考下图填写训练作业参数.
 
