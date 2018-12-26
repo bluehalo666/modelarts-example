@@ -57,26 +57,7 @@
 <img src="images/创建Notebook开发界面.PNG" width="1000px" />
 
 
-**步骤 9**  &#160; &#160; 在Cell中填写数据转换代码，完整代码请参见<a href ="codes/data_format_conversion.py">data\_format\_conversion.py</a>，请根据数据集实际存储位置，修改脚本代码中的BASE_PATH 参数(本例中为“s3://iceberg-data-set-d91cb8a8-5d46-4101-94d7-3f99391d6fb7/iceberg/”, 即train.json和test.json的OBS父目录，在执行数据转换代码前，请先执行以下代码：
-
-	import moxing.tensorflow as mox
-	import os
-	
-	_S3_ACCESS_KEY_ID = os.environ.get('ACCESS_KEY_ID', None)                       
-	_S3_SECRET_ACCESS_KEY = os.environ.get('SECRET_ACCESS_KEY', None)
-	_endpoint='100.125.40.3'
-	_S3_USE_HTTPS = os.environ.get('S3_USE_HTTPS', True)
-	_S3_VERIFY_SSL = os.environ.get('S3_VERIFY_SSL', False)
-	os.environ['AWS_ACCESS_KEY_ID']=_S3_ACCESS_KEY_ID
-	os.environ['AWS_SECRET_ACCESS_KEY']=_S3_SECRET_ACCESS_KEY
-	os.environ['S3_ENDPOINT']=_endpoint
-	os.environ['S3_USE_HTTPS']='1'
-	os.environ["S3_VERIFY_SSL"]='0'
-	mox.file.set_auth(ak=_S3_ACCESS_KEY_ID,sk=_S3_SECRET_ACCESS_KEY,server=_endpoint,port=None,
-	                     is_secure=_S3_USE_HTTPS,ssl_verify=_S3_VERIFY_SSL)
-	mox.file.set_auth(ssl_verify=False)
-	mox.file.set_auth(is_secure=False)
-
+**步骤 9**  &#160; &#160; 在Cell中填写数据转换代码，完整代码请参见<a href ="codes/data_format_conversion.py">data\_format\_conversion.py</a>，请根据数据集实际存储位置，修改脚本代码中的BASE_PATH 参数(本例中为“s3://iceberg-data-set-d91cb8a8-5d46-4101-94d7-3f99391d6fb7/iceberg/”, 即train.json和test.json的OBS父目录。
 
 **步骤 10**  &#160; &#160; 单击Cell上方的 ，运行代码（可能需要较长时间，若长时间没有执行结果，请尝试分段执行代码，将脚本分成多段放在不同的cell中执行，参见图7）。代码运行成功后，将在“s3://iceberg-data-set-d91cb8a8-5d46-4101-94d7-3f99391d6fb7/iceberg/”目录下生成如下三个文件：
 
