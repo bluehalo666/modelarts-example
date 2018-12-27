@@ -10,7 +10,6 @@ import time
 import logging
 
 TRAIN_BASE_PATH = "/home/work/user-job-dir/"
-LOCAL_BASE_URL = '/home/work'
 
 def save_inter_model(src_url, dst_url, interval=10):
     save_num = 1
@@ -30,14 +29,19 @@ if __name__ == "__main__":
                         help='num of gpus')
     parser.add_argument('--train_url', type=str, default='s3://obs--jnn/save_model/caffe_mnist/',
                         help='the obs url to save model')
-    parser.add_argument('--train_path_name', type=str, default='s3://obs--jnn/save_model/caffe_mnist/',
+    parser.add_argument('--data_path_suffix', type=str, default='caffe_mnist',
                         help='the name of folder that save train file')
+    parser.add_argument('--data_local_path', type=str, default='/home/work/dataset',
+                        help='the local path to save dataset')
+    parser.add_argument('--model_local_path', type=str, default='/home/work/lenet_mnist',
+                        help='the local path to save model')
+    
 
     args = parser.parse_args()
     
     # data local url
     
-    local_dataset_url = os.path.join(LOCAL_BASE_URL, "dataset")
+    local_dataset_url = args.data_local_path
     if not os.path.exists(local_dataset_url):
         os.makedirs(local_dataset_url)
     print('local_dataset_url: ' + local_dataset_url)
@@ -55,7 +59,7 @@ if __name__ == "__main__":
             mox.file.copy_parallel(src_url=data_url, dst_url=local_dataset_url)
             
             # model save path
-            model_local_output = os.path.join(LOCAL_BASE_URL, 'lenet_mnist')
+            model_local_output = args.model_local_path
             if not os.path.exists(model_local_output):
                 os.makedirs(model_local_output)
             print("model_local_output: " + model_local_output)
@@ -63,7 +67,7 @@ if __name__ == "__main__":
 
             #Training
             solver_name = 'lenet_solver.prototxt'
-            train_file_path = os.path.join(TRAIN_BASE_PATH, args.train_path_name)
+            train_file_path = os.path.join(TRAIN_BASE_PATH, args.data_path_suffix)
             solver_file = os.path.join(train_file_path, solver_name)
             
             #Timing synchronization model from local to obs
